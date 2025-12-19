@@ -3,6 +3,7 @@ import AddItem from "./Components/addItem";
 import ItemList from "./Components/itemList";
 
 const App = () => {
+  const[filter,setfilter]=useState("all")
   const [text, settext] = useState("");
   const [items, setitems] = useState(()=>{
     const saved = localStorage.getItem("todoItems")
@@ -17,6 +18,7 @@ const App = () => {
       ...items,
       {
         text: text,
+        completed:false
       },
     ]);
     settext("");
@@ -29,6 +31,16 @@ const App = () => {
      updated[idx].text =newItem
      setitems(updated)
       }
+    const toggleCompleted =(idx)=>{
+      const updated = [...items]
+      updated[idx].completed =!updated[idx].completed
+      setitems(updated)
+    }
+    const filteredItems = items.filter((item)=>{
+      if(filter === "completed")return item.completed;
+      if(filter === "incompleted")return !item.completed;
+      return true
+    })
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-blue-800 via-white to-purple-800">
       <div
@@ -39,7 +51,18 @@ const App = () => {
                    shadow-2xl"
       >
         <AddItem addItems={addItems} text={text} settext={settext} />
-        <ItemList items={items} deleteItem={deleteItem} editItem={editItem} text={text}/>
+        <div className="mt-4 flex justify-center gap-3">
+           {["all","completed","incompleted"].map((type)=>(
+          <button key={type} onClick={()=>setfilter(type)} className={`px-4 py-2 rounded-full font-bold transition ${filter===type?"bg-blue-600 text-white":"bg-gray-200 text-gray-700 hover:bg-gray-300"}`}>{type.toUpperCase()}</button>
+        ))}
+        </div>
+       
+        <ItemList
+  items={filteredItems}
+  deleteItem={deleteItem}
+  editItem={editItem}
+  toggleCompleted={toggleCompleted}
+/>
       </div>
     </div>
   );

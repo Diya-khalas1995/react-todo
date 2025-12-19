@@ -3,7 +3,7 @@ import DeleteItem from "./deleteItem";
 import { FaRegEdit } from "react-icons/fa";
 import { MdOutlineSaveAlt } from "react-icons/md";
 
-const ItemList = ({ items, deleteItem, editItem }) => {
+const ItemList = ({ items, deleteItem, editItem ,toggleCompleted}) => {
   const [editIdx, setEditIdx] = useState(null);
   const [editText, setEditText] = useState('');
   const inputRef = useRef(null);
@@ -38,6 +38,8 @@ const ItemList = ({ items, deleteItem, editItem }) => {
                      ring-2 ring-blue-400/40
                      shadow-2xl text-purple-900 font-bold flex items-center justify-between"
         >
+          <div className="flex items-center gap-3 flex-1">
+           <input type="checkbox" checked={item.completed} onChange={()=>toggleCompleted(idx)} className="w-5 h-5 accent-green-600"/> 
           {editIdx === idx ? (
             <input
               ref={inputRef} 
@@ -47,9 +49,9 @@ const ItemList = ({ items, deleteItem, editItem }) => {
               onKeyDown={(e) => e.key === "Enter" && handleSave(idx)}
             />
           ) : (
-            <span>{item.text}</span>
+            <span className={`flex-1 ml-3 ${item.completed?"line-through text-gray-400" : ""}`}>{item.text}</span>
           )}
-
+</div>
           <div className="flex gap-2">
             {editIdx === idx ? (
               <button
